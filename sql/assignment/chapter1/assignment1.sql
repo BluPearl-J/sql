@@ -34,4 +34,5 @@ CREATE TABLE Orders (
     order_date DATETIME DEFAULT CURRRENT_TIMESTAMP,
     --FOREIGN KEY (user_id) --REFERENCES Users(user_id),
     --FOREIGN KEY (a_product_id) --REFERENCES Products(a_product_id)
+
 );
