@@ -1,17 +1,17 @@
- 2.40
+-- 2.40
  SELECT I.SKU, I.SKU_Description, I.WarehouseID, W.WarehouseCity, W.WarehouseState
 FROM INVENTORY I, WAREHOUSE W
 WHERE I.WarehouseID = W.WarehouseID
   AND (W.WarehouseCity = 'Atlanta' OR W.WarehouseCity = 'Bangor' OR W.WarehouseCity = 'Chicago');
 
   
-2.41
+-- 2.41
 SELECT I.SKU, I.SKU_Description, I.WarehouseID, W.WarehouseCity, W.WarehouseState
 FROM INVENTORY I
 JOIN WAREHOUSE W ON I.WarehouseID = W.WarehouseID
 WHERE W.WarehouseCity IN ('Atlanta', 'Bangor', 'Chicago');
 
-2.42
+-- 2.42
 SELECT I.SKU, I.SKU_Description, I.WarehouseID, W.WarehouseCity, W.WarehouseState
 FROM INVENTORY I
 JOIN WAREHOUSE W ON I.WarehouseID = W.WarehouseID
@@ -19,22 +19,30 @@ JOIN WAREHOUSE W ON I.WarehouseID = W.WarehouseID
   and W.WarehouseCity <> 'Bangor' 
   and W.WarehouseCity <> 'Chicago';
 
+-- 2.42 with != to symbol
+SELECT I.SKU, I.SKU_Description, I.WarehouseID, W.WarehouseCity, W.WarehouseState
+FROM INVENTORY I
+JOIN WAREHOUSE W ON I.WarehouseID = W.WarehouseID
+  where W.WarehouseCity != 'Atlanta' 
+  and W.WarehouseCity !='Bangor' 
+  and W.WarehouseCity != 'Chicago';
 
-2.43
+
+-- 2.43
 SELECT I.SKU, I.SKU_Description, I.WarehouseID, W.WarehouseCity, W.WarehouseState
 FROM INVENTORY I
 JOIN WAREHOUSE W ON I.WarehouseID = W.WarehouseID
 WHERE W.WarehouseCity NOT IN ('Atlanta', 'Bangor', 'Chicago');
 
-2.44 56
+-- 2.44 56
 
- 2.47
+--  2.47
  SELECT I.SKU, I.SKU_Description, I.WarehouseID
 FROM INVENTORY I
 JOIN WAREHOUSE W ON I.WarehouseID = W.WarehouseID
 WHERE W.Manager = 'Lucille Smith';
 
-2.48
+-- 2.48
 SELECT WarehouseID, AVG(QuantityOnHand) AS AvgOnHand
 FROM INVENTORY
 WHERE WarehouseID IN (
@@ -44,7 +52,7 @@ WHERE WarehouseID IN (
 )
 GROUP BY WarehouseID;
 
-2.49
+-- 2.49
 SELECT I.WarehouseID, AVG(I.QuantityOnHand) AS AvgOnHand
 FROM INVENTORY I, WAREHOUSE W
 WHERE I.WarehouseID = W.WarehouseID
@@ -52,7 +60,7 @@ WHERE I.WarehouseID = W.WarehouseID
 GROUP BY I.WarehouseID;
 
 
-2.50
+-- 2.50
 SELECT I.WarehouseID, AVG(I.QuantityOnHand) AS AvgOnHand
 FROM INVENTORY I
 JOIN WAREHOUSE W ON I.WarehouseID = W.WarehouseID
@@ -60,7 +68,7 @@ WHERE W.Manager = 'Lucille Smith'
 GROUP BY I.WarehouseID;
 
 
-2.51
+-- 2.51
 SELECT I.WarehouseID, W.WarehouseCity, W.WarehouseState, W.Manager,
        I.SKU, I.SKU_Description, I.QuantityOnHand
 FROM INVENTORY I
@@ -68,14 +76,14 @@ JOIN WAREHOUSE W ON I.WarehouseID = W.WarehouseID
 WHERE W.Manager = 'Lucille Smith';
 
 
-2.52
+-- 2.52
 SELECT WarehouseID,
        SUM(QuantityOnOrder) AS TotalItemsOnOrder,
        SUM(QuantityOnHand) AS TotalItemsOnHand
 FROM INVENTORY
 GROUP BY WarehouseID, QuantityOnOrder;
 
-2.55
+-- 2.55
 SELECT WarehouseID,
        SUM(QuantityOnOrder) AS TotalItemsOrder,
        SUM(QuantityOnHand) AS TotalItemsatHand
