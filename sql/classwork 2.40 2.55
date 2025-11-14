@@ -1,3 +1,4 @@
+pg 122
 -- 2.40
  SELECT I.SKU, I.SKU_Description, I.WarehouseID, W.WarehouseCity, W.WarehouseState
 FROM INVENTORY I, WAREHOUSE W
