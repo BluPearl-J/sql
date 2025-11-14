@@ -107,7 +107,7 @@ GROUP BY WarehouseID
 ORDER BY TotalItemsOnHandLT3 DESC;
 
 
--- 2.38 Same as above,  warehouses with fewer than 2 SKUs in the sum:
+-- 2.38 identical as above,  warehouses lesser than 2 SKUs in the sum:
 SELECT WarehouseID, SUM(QuantityOnHand) AS TotalItemsOnHandLT3
 FROM INVENTORY
 WHERE QuantityOnHand < 3
@@ -117,6 +117,6 @@ ORDER BY TotalItemsOnHandLT3 DESC;
 
 -- 2.39 Which clause is applied first — WHERE or HAVING?
 
-The WHERE clause is applied first, it filters rows before grouping.
+WHERE clause is applied first,  filters rows before grouping.
 
 The HAVING clause is after grouping, filtering groups
