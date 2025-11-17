@@ -1,0 +1,35 @@
+
+2.56
+-- Microsoft Access / MySQL
+-- Display SKUs that appear in either the 2016 printed catalog only or
+--  the 2017 printed catalog only
+-- or both.
+--  (Assuming there is a column like Printed = 'Y' to indicate printed catalog entries.)
+SELECT SKU, SKU_Description, Department
+FROM CATALOG_SKU_2016
+WHERE Printed = 'Y'
+UNION
+SELECT SKU, SKU_Description, Department
+FROM CATALOG_SKU_2017
+WHERE Printed = 'Y';
+
+
+2.57
+SELECT SKU, SKU_Description, Department
+FROM Catalog2016
+WHERE Source = 'Printed'
+UNION
+SELECT SKU, SKU_Description, Department
+FROM Catalog2017
+WHERE Source = 'Printed';
+
+
+
+
+2.59
+FROM CATALOG_SKU_2016
+WHERE Printed = 'Y'
+  AND SKU IN (
+      SELECT SKU FROM CATALOG_SKU_2017 WHERE Printed = 'Y'
+  );
+
