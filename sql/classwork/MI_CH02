@@ -1,0 +1,164 @@
+
+create database mi_ch02;
+use mi_ch02;
+
+CREATE TABLE ITEM (
+		ItemID	            Int				    NOT NULL auto_increment,
+		Description		    VarChar(255)		NOT NULL,
+		PurchaseDate		Date			NOT NULL,
+		Store			    Char(50)		NOT NULL,
+		City				Char(35)		NOT NULL,
+		Quantity			Int		    	NOT NULL,
+		LocalCurrencyAmount	Numeric(18,2)	NOT NULL,
+		ExchangeRate	    Numeric(12,6)	NOT NULL,
+		CONSTRAINT	Item_PK	   	 PRIMARY KEY (ItemID)
+		);
+        
+
+CREATE TABLE SHIPMENT (
+		ShipmentID			    Int				    NOT NULL auto_increment,
+		ShipperName		    	Char(35)		    NOT NULL,
+		ShipperInvoiceNumber	Int				    NOT NULL,
+		DepartureDate		    Date			    NULL,
+		ArrivalDate				Date			    NULL,
+		InsuredValue		    Numeric(12,2)		NULL,
+		CONSTRAINT	Shipment_PK	  PRIMARY KEY (ShipmentID)
+		);
+
+ 
+CREATE TABLE SHIPMENT_ITEM (
+		ShipmentID		   	Int				    NOT NULL,
+		ShipmentItemID		Int				    NOT NULL,
+		ItemID		    	Int				    NOT NULL,
+		Value		  	    Numeric(12,2)		NOT NULL,
+		CONSTRAINT	ShipmentItem_PK	    		PRIMARY KEY(ShipmentID, ShipmentItemID),
+		CONSTRAINT	Ship_Item_Ship_FK		    FOREIGN KEY(ShipmentID)
+                      REFERENCES SHIPMENT(ShipmentID)
+                        ON DELETE CASCADE,
+		CONSTRAINT	Ship_Item_Item_FK	FOREIGN KEY(ItemID)
+                      REFERENCES ITEM(ItemID)
+     		);
+
+
+
+
+
+-- A. Show all data in each of the tables
+SELECT * FROM ITEM;
+SELECT * FROM SHIPMENT;
+SELECT * FROM SHIPMENT_ITEM;
+
+-- B. List ShipmentID, ShipperName, ShipperInvoiceNumber of all shipments
+SELECT ShipmentID, ShipperName, ShipperInvoiceNumber
+FROM SHIPMENT;
+
+
+-- C. List ShipmentID, ShipperName, and ShipperInvoiceNumber 
+-- for all shipments with insured value greater than $10,000.00.
+
+SELECT ShipmentID, ShipperName, ShipperInvoiceNumber
+FROM SHIPMENT
+WHERE InsuredValue > 10000;
+
+-- D. Shippers whose name starts with 'AB'
+SELECT ShipmentID, ShipperName, ShipperInvoiceNumber
+FROM SHIPMENT
+WHERE ShipperName LIKE 'AB%';
+
+-- E. Shipments that departed in December
+SELECT ShipmentID, ShipperName, ShipperInvoiceNumber, ArrivalDate
+FROM SHIPMENT
+WHERE MONTH(DepartureDate) = 12;
+
+-- F. Shipments that departed on the 10th day of any month
+SELECT ShipmentID, ShipperName, ShipperInvoiceNumber, ArrivalDate
+FROM SHIPMENT
+WHERE DAY(DepartureDate) = 10;
+
+-- G. Maximum and Minimum InsuredValue
+SELECT MAX(InsuredValue) AS MaxValue, MIN(InsuredValue) AS MinValue
+FROM SHIPMENT;
+
+-- H. Average InsuredValue
+SELECT AVG(InsuredValue) AS AvgValue
+FROM SHIPMENT;
+
+-- I. Count the number of shipments
+SELECT COUNT(*) AS ShipmentCount
+FROM SHIPMENT;
+
+-- J. ItemID, Description, Store, USCurrencyAmount
+SELECT ItemID, Description, Store,
+       LocalCurrencyAmount * ExchangeRate AS USCurrencyAmount
+FROM ITEM;
+
+-- K. Group item purchases by City and Store
+SELECT City, Store
+FROM ITEM
+GROUP BY City, Store;
+
+-- L. Count purchases by City and Store
+SELECT City, Store, COUNT(*) AS PurchaseCount
+FROM ITEM
+GROUP BY City, Store;
+
+-- M. Shipments with item value >= 1000 (subquery)
+SELECT ShipperName, ShipmentID, DepartureDate
+FROM SHIPMENT
+WHERE ShipmentID IN (
+    SELECT ShipmentID
+    FROM SHIPMENT_ITEM
+    WHERE Value >= 1000
+)
+ORDER BY ShipperName ASC, DepartureDate DESC;
+
+
+
+ -- N. Show the ShipperName, ShipmentID, and DepartureDate of all shipments that 
+-- have an item with a value of $1,000.00 or more. Use a join. Present results sorted 
+-- by ShipperName in ascending order and then DepartureDate in descending 
+-- order.
+-- N. Shipments with item value >= 1000 (join)
+SELECT s.ShipperName, s.ShipmentID, s.DepartureDate
+FROM SHIPMENT s
+JOIN SHIPMENT_ITEM si ON s.ShipmentID = si.ShipmentID
+WHERE si.Value >= 1000
+ORDER BY s.ShipperName ASC, s.DepartureDate DESC;
+
+-- O. Shipments for items purchased in Singapore (subquery)
+SELECT ShipperName, ShipmentID, DepartureDate
+FROM SHIPMENT
+WHERE ShipmentID IN (
+    SELECT ShipmentID
+    FROM SHIPMENT_ITEM si
+    JOIN ITEM i ON si.ItemID = i.ItemID
+    WHERE i.City = 'Singapore'
+)
+ORDER BY ShipperName ASC, DepartureDate DESC;
+
+-- P. Shipments for items purchased in Singapore (join, no JOIN ON syntax)
+SELECT s.ShipperName, s.ShipmentID, s.DepartureDate
+FROM SHIPMENT s, SHIPMENT_ITEM si, ITEM i
+WHERE s.ShipmentID = si.ShipmentID
+  AND si.ItemID = i.ItemID
+  AND i.City = 'Singapore'
+ORDER BY s.ShipperName ASC, s.DepartureDate DESC;
+
+-- Q. Shipments for items purchased in Singapore (JOIN ON syntax)
+SELECT s.ShipperName, s.ShipmentID, s.DepartureDate
+FROM SHIPMENT s
+JOIN SHIPMENT_ITEM si ON s.ShipmentID = si.ShipmentID
+JOIN ITEM i ON si.ItemID = i.ItemID
+WHERE i.City = 'Singapore'
+ORDER BY s.ShipperName ASC, s.DepartureDate DESC;
+
+-- R. Shipments + Value for items purchased in Singapore (join + subquery)
+SELECT s.ShipperName, s.ShipmentID, s.DepartureDate, si.Value
+FROM SHIPMENT s
+JOIN SHIPMENT_ITEM si ON s.ShipmentID = si.ShipmentID
+WHERE si.ItemID IN (
+    SELECT ItemID FROM ITEM WHERE City = 'Singapore'
+)
+ORDER BY s.ShipperName ASC, s.DepartureDate DESC;
+
+
